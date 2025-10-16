@@ -1,0 +1,74 @@
+{
+  "name": "@shiftrightlabs/gemini-lite",
+  "version": "0.1.0",
+  "description": "Lightweight, read-only code analysis with Gemini AI - agentic architecture, physical isolation, zero mutation capabilities",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "prebuild": "node scripts/verify-readonly.js",
+    "build": "tsc && node esbuild.config.js",
+    "verify-readonly": "node scripts/verify-readonly.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:security": "vitest run src/__tests__/security",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run verify-readonly && npm run build && npm run test"
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "code-analysis",
+    "read-only",
+    "security",
+    "static-analysis",
+    "code-review",
+    "pr-review",
+    "ci-analysis",
+    "agentic",
+    "typescript",
+    "llm"
+  ],
+  "author": "ShiftRight Labs",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/shiftrightlabs/gemini-lite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shiftrightlabs/gemini-lite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shiftrightlabs/gemini-lite/issues"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "glob": "^10.3.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.19.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
