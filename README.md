@@ -2,8 +2,9 @@
 
 > **Read-only code analysis module** - Physically isolated from mutation capabilities
 
-[![npm version](https://img.shields.io/npm/v/@shiftrightlabs/gemini-lite.svg)](https://www.npmjs.com/package/@shiftrightlabs/gemini-lite)
-[![License](https://img.shields.io/npm/l/@shiftrightlabs/gemini-lite.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/shiftrightlabs/gemini-lite/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
+[![Build](https://github.com/shiftrightlabs/gemini-lite/actions/workflows/build.yml/badge.svg)](https://github.com/shiftrightlabs/gemini-lite/actions)
 
 **By [ShiftRight Labs](https://github.com/shiftrightlabs)** | Derived from [Gemini CLI](https://github.com/google/gemini-cli) (Apache 2.0)
 
