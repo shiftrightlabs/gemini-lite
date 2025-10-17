@@ -37,10 +37,12 @@
  */
 
 import type {
-  PartListUnion,
+  Part,
   GenerateContentResponse,
   FunctionCall,
   FinishReason,
+  EnhancedGenerateContentResponse,
+  CitationSource,
 } from '@google/generative-ai';
 import type {
   ServerGeminiStreamEvent,
@@ -57,7 +59,7 @@ import { GeminiEventType } from './events.js';
 export interface ILiteChat {
   sendMessageStream(
     model: string,
-    request: { message: PartListUnion; config?: { abortSignal?: AbortSignal } },
+    request: { message: string | Array<string | Part>; config?: { abortSignal?: AbortSignal } },
     prompt_id: string,
   ): Promise<AsyncIterable<StreamEvent>>;
 }
@@ -110,7 +112,7 @@ export class LiteTurn {
    */
   async *run(
     model: string,
-    req: PartListUnion,
+    req: string | Array<string | Part>,
     signal: AbortSignal,
   ): AsyncGenerator<ServerGeminiStreamEvent> {
     try {
@@ -162,7 +164,7 @@ export class LiteTurn {
         }
 
         // Handle function calls (tool requests from the model)
-        const functionCalls = resp.functionCalls ?? [];
+        const functionCalls = (resp as EnhancedGenerateContentResponse).functionCalls?.() ?? [];
         for (const fnCall of functionCalls) {
           const event = this.handlePendingFunctionCall(fnCall);
           if (event) {
@@ -237,9 +239,7 @@ export class LiteTurn {
   private handlePendingFunctionCall(
     fnCall: FunctionCall,
   ): ServerGeminiStreamEvent | null {
-    const callId =
-      fnCall.id ??
-      `${fnCall.name}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const callId = `${fnCall.name}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const name = fnCall.name || 'undefined_tool_name';
     const args = (fnCall.args || {}) as Record<string, unknown>;
 
@@ -277,11 +277,12 @@ export class LiteTurn {
    * Extracts citations from response
    */
   private getCitations(resp: GenerateContentResponse): string[] {
-    return (resp.candidates?.[0]?.citationMetadata?.citations ?? [])
-      .filter((citation) => citation.uri !== undefined)
-      .map((citation) => {
-        if (citation.title) {
-          return `(${citation.title}) ${citation.uri}`;
+    const citationSources = resp.candidates?.[0]?.citationMetadata?.citationSources ?? [];
+    return citationSources
+      .filter((citation: CitationSource) => citation.uri !== undefined)
+      .map((citation: CitationSource) => {
+        if ('title' in citation && citation.uri) {
+          return `(${(citation as { title?: string }).title}) ${citation.uri}`;
         }
         return citation.uri!;
       });

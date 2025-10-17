@@ -41,11 +41,13 @@ export interface ToolResult {
  */
 export interface ToolResultDisplay {
   /** Type of display */
-  type: 'text' | 'json' | 'file';
+  type: 'text' | 'json' | 'file' | 'glob' | 'grep' | 'directory';
   /** Content to display */
-  content: string;
+  content?: string;
   /** Optional file path */
   filePath?: string;
+  // Additional fields for specific tool types
+  [key: string]: unknown;
 }
 
 /**

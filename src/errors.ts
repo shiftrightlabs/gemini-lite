@@ -185,7 +185,7 @@ export class APIError extends OperationError {
   constructor(message: string, statusCode?: number, details?: unknown) {
     super(message, 'API_ERROR', {
       statusCode,
-      ...details,
+      ...(typeof details === 'object' && details !== null ? details : { details }),
     });
   }
 }

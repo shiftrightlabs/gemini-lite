@@ -22,7 +22,7 @@
  */
 
 import { glob } from 'glob';
-import type { FunctionDeclaration } from '@google/generative-ai';
+import { SchemaType, type FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolResult, ToolConfig } from './toolBase.js';
 import { createSuccessResult } from './toolBase.js';
 import { ToolExecutionError, InvalidArgumentError } from '../errors.js';
@@ -46,20 +46,20 @@ export class GlobTool implements Tool {
     description:
       'Find files matching a glob pattern (e.g., "**/*.ts" for all TypeScript files, "src/**/*.js" for JS files in src)',
     parameters: {
-      type: 'object',
+      type: SchemaType.OBJECT,
       properties: {
         pattern: {
-          type: 'string',
+          type: SchemaType.STRING,
           description:
             'Glob pattern to match files. Examples: "**/*.ts" (all TS files), "src/**/*.js" (JS in src), "*.md" (MD in root)',
         },
         ignore: {
-          type: 'array',
-          items: { type: 'string' },
+          type: SchemaType.ARRAY,
+          items: { type: SchemaType.STRING },
           description: 'Additional patterns to ignore (optional)',
         },
         maxResults: {
-          type: 'number',
+          type: SchemaType.NUMBER,
           description: 'Maximum number of results to return (default: 100)',
         },
       },
@@ -75,24 +75,24 @@ export class GlobTool implements Tool {
   ): Promise<ToolResult> {
     try {
       // Validate pattern
-      const pattern = params.pattern;
+      const pattern = params['pattern'];
       if (typeof pattern !== 'string' || !pattern.trim()) {
-        throw new InvalidArgumentError('pattern', pattern, 'non-empty string');
+        throw new InvalidArgumentError('pattern', 'non-empty string', pattern);
       }
 
       // Parse optional parameters
-      const ignorePatterns = Array.isArray(params.ignore)
-        ? params.ignore.filter((p): p is string => typeof p === 'string')
+      const ignorePatterns = Array.isArray(params['ignore'])
+        ? (params['ignore'] as unknown[]).filter((p): p is string => typeof p === 'string')
         : [];
 
       const maxResults =
-        typeof params.maxResults === 'number' && params.maxResults > 0
-          ? params.maxResults
+        typeof params['maxResults'] === 'number' && params['maxResults'] > 0
+          ? params['maxResults']
           : 100;
 
       // Build ignore list
-      const allIgnorePatterns = [
-        ...this.config.ignorePatterns,
+      const allIgnorePatterns: string[] = [
+        ...(this.config.ignorePatterns || []),
         ...ignorePatterns,
         '**/node_modules/**',
         '**/.git/**',

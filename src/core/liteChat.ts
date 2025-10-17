@@ -38,7 +38,7 @@ import {
   type GenerativeModel,
   type GenerateContentRequest,
   type GenerateContentResponse,
-  type PartListUnion,
+  type Part,
   type FunctionDeclaration,
 } from '@google/generative-ai';
 import type { ILiteChat, StreamEvent } from './liteTurn.js';
@@ -70,7 +70,7 @@ export class LiteChat implements ILiteChat {
   private readonly modelName: string;
   private readonly config: LiteChatConfig;
   private model: GenerativeModel | null = null;
-  private history: any[] = [];
+  private history: Array<{ role: string; parts: Part[] }> = [];
 
   constructor(config: LiteChatConfig) {
     this.config = config;
@@ -85,8 +85,8 @@ export class LiteChat implements ILiteChat {
    */
   async sendMessageStream(
     model: string,
-    request: { message: PartListUnion; config?: { abortSignal?: AbortSignal } },
-    prompt_id: string,
+    request: { message: string | Array<string | Part>; config?: { abortSignal?: AbortSignal } },
+    _prompt_id: string,
   ): Promise<AsyncIterable<StreamEvent>> {
     const generativeModel = this.getOrCreateModel(model);
 
@@ -138,7 +138,11 @@ export class LiteChat implements ILiteChat {
    */
   private getOrCreateModel(modelName: string): GenerativeModel {
     if (!this.model || this.modelName !== modelName) {
-      const modelConfig: any = {
+      const modelConfig: {
+        model: string;
+        systemInstruction?: string;
+        tools?: Array<{ functionDeclarations: FunctionDeclaration[] }>;
+      } = {
         model: modelName,
       };
 
@@ -161,13 +165,17 @@ export class LiteChat implements ILiteChat {
   /**
    * Builds contents array from message
    */
-  private buildContents(message: PartListUnion): any[] {
+  private buildContents(message: string | Array<string | Part>): Array<{ role: string; parts: Part[] }> {
     // Add history
     const contents = [...this.history];
 
     // Add current message
     if (Array.isArray(message)) {
-      contents.push({ role: 'user', parts: message });
+      // Filter out strings and convert to Part objects
+      const parts: Part[] = message.map(item =>
+        typeof item === 'string' ? { text: item } : item
+      );
+      contents.push({ role: 'user', parts });
     } else if (typeof message === 'string') {
       contents.push({ role: 'user', parts: [{ text: message }] });
     } else {
@@ -180,7 +188,7 @@ export class LiteChat implements ILiteChat {
   /**
    * Adds a message to history
    */
-  addToHistory(role: 'user' | 'model', parts: any[]): void {
+  addToHistory(role: 'user' | 'model', parts: Part[]): void {
     this.history.push({ role, parts });
   }
 
@@ -194,7 +202,7 @@ export class LiteChat implements ILiteChat {
   /**
    * Gets current history (for debugging)
    */
-  getHistory(curated?: boolean): any[] {
+  getHistory(_curated?: boolean): Array<{ role: string; parts: Part[] }> {
     return this.history;
   }
 }

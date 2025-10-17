@@ -92,7 +92,7 @@ export class ToolRegistry {
     name: string,
     params: Record<string, unknown>,
     signal?: AbortSignal,
-  ): Promise<any> {
+  ): Promise<unknown> {
     const tool = this.getTool(name);
     if (!tool) {
       throw new Error(`Unknown tool: ${name}`);

@@ -28,7 +28,7 @@
 
 import type {
   FinishReason,
-  GenerateContentResponseUsageMetadata,
+  UsageMetadata,
   Part,
 } from '@google/generative-ai';
 
@@ -68,7 +68,7 @@ export interface GeminiErrorEventValue {
  */
 export interface GeminiFinishedEventValue {
   reason: FinishReason | undefined;
-  usageMetadata: GenerateContentResponseUsageMetadata | undefined;
+  usageMetadata: UsageMetadata | undefined;
 }
 
 /**

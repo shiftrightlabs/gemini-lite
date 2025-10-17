@@ -123,12 +123,12 @@ export class LiteConfig {
   private static loadEnvConfig(): Partial<LiteConfigInput> {
     const config: Partial<LiteConfigInput> = {};
 
-    if (process.env.GEMINI_API_KEY) {
-      config.auth = { apiKey: process.env.GEMINI_API_KEY };
+    if (process.env['GEMINI_API_KEY']) {
+      config.auth = { apiKey: process.env['GEMINI_API_KEY'] };
     }
 
-    if (process.env.GEMINI_MODEL) {
-      config.model = process.env.GEMINI_MODEL;
+    if (process.env['GEMINI_MODEL']) {
+      config.model = process.env['GEMINI_MODEL'];
     }
 
     return config;
@@ -138,7 +138,7 @@ export class LiteConfig {
    * Loads user-level configuration
    */
   private static loadUserConfig(): Partial<LiteConfigInput> {
-    const homeDir = process.env.HOME || process.env.USERPROFILE;
+    const homeDir = process.env['HOME'] || process.env['USERPROFILE'];
     if (!homeDir) return {};
 
     const configPath = join(homeDir, '.gemini-lite', 'config.json');

@@ -22,7 +22,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { resolve, relative } from 'node:path';
-import type { FunctionDeclaration } from '@google/generative-ai';
+import { SchemaType, type FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolConfig, ToolResult } from './toolBase.js';
 import { createSuccessResult, createErrorResult } from './toolBase.js';
 import { validatePathWithinWorkspace } from '../validation.js';
@@ -44,14 +44,14 @@ export class ReadFileTool implements Tool {
     name: 'read_file',
     description: 'Read the contents of a file. Use this tool to examine source code, configuration files, or any text file within the workspace.',
     parameters: {
-      type: 'object',
+      type: SchemaType.OBJECT,
       properties: {
         file_path: {
-          type: 'string',
+          type: SchemaType.STRING,
           description: 'Path to the file to read (relative or absolute within workspace)',
         },
         encoding: {
-          type: 'string',
+          type: SchemaType.STRING,
           description: 'File encoding (default: utf-8)',
           enum: ['utf-8', 'ascii', 'base64'],
         },
@@ -68,12 +68,12 @@ export class ReadFileTool implements Tool {
   ): Promise<ToolResult> {
     try {
       // Extract and validate parameters
-      const filePath = params.file_path;
+      const filePath = params['file_path'];
       if (typeof filePath !== 'string') {
         return createErrorResult('file_path must be a string');
       }
 
-      const encoding = (params.encoding as string) || 'utf-8';
+      const encoding = (params['encoding'] as string) || 'utf-8';
       if (!['utf-8', 'ascii', 'base64'].includes(encoding)) {
         return createErrorResult('Invalid encoding. Must be utf-8, ascii, or base64');
       }
@@ -113,9 +113,9 @@ export class ReadFileTool implements Tool {
 
       if (error instanceof Error) {
         if (error.message.includes('ENOENT')) {
-          return createErrorResult(new FileNotFoundError(params.file_path as string));
+          return createErrorResult(new FileNotFoundError(params['file_path'] as string));
         }
-        return createErrorResult(new FileReadError(params.file_path as string, error));
+        return createErrorResult(new FileReadError(params['file_path'] as string, error));
       }
 
       return createErrorResult('Unknown error reading file');

@@ -24,7 +24,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { glob } from 'glob';
-import type { FunctionDeclaration } from '@google/generative-ai';
+import { SchemaType, type FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolResult, ToolConfig } from './toolBase.js';
 import { createSuccessResult } from './toolBase.js';
 import { ToolExecutionError, InvalidArgumentError } from '../errors.js';
@@ -55,28 +55,28 @@ export class GrepTool implements Tool {
     description:
       'Search for text pattern in files. Returns matching lines with file paths and line numbers.',
     parameters: {
-      type: 'object',
+      type: SchemaType.OBJECT,
       properties: {
         pattern: {
-          type: 'string',
+          type: SchemaType.STRING,
           description:
             'Text or regex pattern to search for. Examples: "TODO", "function.*async", "import React"',
         },
         filePattern: {
-          type: 'string',
+          type: SchemaType.STRING,
           description:
             'Glob pattern to limit which files to search (default: "**/*"). Examples: "**/*.ts", "src/**/*.js"',
         },
         caseSensitive: {
-          type: 'boolean',
+          type: SchemaType.BOOLEAN,
           description: 'Whether search is case-sensitive (default: false)',
         },
         maxResults: {
-          type: 'number',
+          type: SchemaType.NUMBER,
           description: 'Maximum number of matches to return (default: 50)',
         },
         contextLines: {
-          type: 'number',
+          type: SchemaType.NUMBER,
           description:
             'Number of lines before/after match to include (default: 0)',
         },
@@ -93,22 +93,22 @@ export class GrepTool implements Tool {
   ): Promise<ToolResult> {
     try {
       // Validate pattern
-      const pattern = params.pattern;
+      const pattern = params['pattern'];
       if (typeof pattern !== 'string' || !pattern.trim()) {
-        throw new InvalidArgumentError('pattern', pattern, 'non-empty string');
+        throw new InvalidArgumentError('pattern', 'non-empty string', pattern);
       }
 
       // Parse optional parameters
       const filePattern =
-        typeof params.filePattern === 'string' && params.filePattern.trim()
-          ? params.filePattern
+        typeof params['filePattern'] === 'string' && params['filePattern'].trim()
+          ? params['filePattern']
           : '**/*';
 
-      const caseSensitive = params.caseSensitive === true;
+      const caseSensitive = params['caseSensitive'] === true;
 
       const maxResults =
-        typeof params.maxResults === 'number' && params.maxResults > 0
-          ? params.maxResults
+        typeof params['maxResults'] === 'number' && params['maxResults'] > 0
+          ? params['maxResults']
           : 50;
 
       // Reserved for future context line feature
@@ -125,14 +125,14 @@ export class GrepTool implements Tool {
       } catch (_error) {
         throw new InvalidArgumentError(
           'pattern',
-          pattern,
           'valid regex pattern',
+          pattern,
         );
       }
 
       // Find files to search
       const allIgnorePatterns = [
-        ...this.config.ignorePatterns,
+        ...(this.config.ignorePatterns || []),
         '**/node_modules/**',
         '**/.git/**',
         '**/dist/**',
@@ -171,7 +171,7 @@ export class GrepTool implements Tool {
 
           let fileHasMatches = false;
           for (let i = 0; i < lines.length && matches.length < maxResults; i++) {
-            const line = lines[i];
+            const line = lines[i]!;
             const match = regex.exec(line);
 
             if (match) {

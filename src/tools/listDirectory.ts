@@ -23,7 +23,7 @@
 
 import { readdir, stat } from 'node:fs/promises';
 import { resolve, relative, join } from 'node:path';
-import type { FunctionDeclaration } from '@google/generative-ai';
+import { SchemaType, type FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolResult, ToolConfig } from './toolBase.js';
 import { createSuccessResult } from './toolBase.js';
 import {
@@ -58,24 +58,24 @@ export class ListDirectoryTool implements Tool {
     description:
       'List files and directories in a given path. Returns names and types (file/directory).',
     parameters: {
-      type: 'object',
+      type: SchemaType.OBJECT,
       properties: {
         path: {
-          type: 'string',
+          type: SchemaType.STRING,
           description:
             'Directory path to list (relative to workspace root). Examples: ".", "src", "src/components"',
         },
         recursive: {
-          type: 'boolean',
+          type: SchemaType.BOOLEAN,
           description:
             'Whether to list recursively (default: false). Use with caution in large directories.',
         },
         showHidden: {
-          type: 'boolean',
+          type: SchemaType.BOOLEAN,
           description: 'Whether to show hidden files/directories (default: false)',
         },
         maxDepth: {
-          type: 'number',
+          type: SchemaType.NUMBER,
           description:
             'Maximum depth for recursive listing (default: 2, max: 5)',
         },
@@ -92,9 +92,9 @@ export class ListDirectoryTool implements Tool {
   ): Promise<ToolResult> {
     try {
       // Validate path
-      const path = params.path;
+      const path = params['path'];
       if (typeof path !== 'string') {
-        throw new InvalidArgumentError('path', path, 'string');
+        throw new InvalidArgumentError('path', 'string', path);
       }
 
       // Resolve path
@@ -110,11 +110,11 @@ export class ListDirectoryTool implements Tool {
       }
 
       // Parse optional parameters
-      const recursive = params.recursive === true;
-      const showHidden = params.showHidden === true;
+      const recursive = params['recursive'] === true;
+      const showHidden = params['showHidden'] === true;
       const maxDepth =
-        typeof params.maxDepth === 'number' && params.maxDepth > 0
-          ? Math.min(params.maxDepth, 5)
+        typeof params['maxDepth'] === 'number' && params['maxDepth'] > 0
+          ? Math.min(params['maxDepth'], 5)
           : 2;
 
       // Check if directory exists

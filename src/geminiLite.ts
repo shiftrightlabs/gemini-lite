@@ -24,7 +24,6 @@ import { LiteConfig } from './config.js';
 import { LiteChat } from './core/liteChat.js';
 import { LiteTurn } from './core/liteTurn.js';
 import { GeminiEventType } from './core/events.js';
-import type { ServerGeminiStreamEvent } from './core/events.js';
 import type {
   LiteConfigInput,
   AnalysisRequest,
@@ -32,7 +31,6 @@ import type {
   IGeminiLite,
   PullRequestOptions,
   ReviewResult,
-  ReviewIssue,
   CodeExplanationOptions,
   ExplanationResult,
   CIFailureOptions,
@@ -133,7 +131,7 @@ export class GeminiLite implements IGeminiLite {
 
       let responseText = '';
       const toolCallCounts: Record<string, number> = {};
-      let usageMetadata: any = undefined;
+      let usageMetadata: { promptTokenCount?: number; candidatesTokenCount?: number; cachedContentTokenCount?: number; totalTokenCount?: number } | undefined = undefined;
       const warnings: string[] = [];
 
       // Process event stream from LiteTurn.run() async generator
