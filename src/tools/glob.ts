@@ -18,15 +18,14 @@
  * GlobTool - File pattern matching for discovery
  *
  * Allows the LLM to discover files by glob patterns
- * Example: "Find all TypeScript files" -> glob "**/*.ts"
+ * Example: Find all TypeScript files with glob pattern
  */
 
 import { glob } from 'glob';
-import type { FunctionDeclaration, Part } from '@google/generative-ai';
+import type { FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolResult, ToolConfig } from './toolBase.js';
-import { createSuccessResult, createErrorResult } from './toolBase.js';
+import { createSuccessResult } from './toolBase.js';
 import { ToolExecutionError, InvalidArgumentError } from '../errors.js';
-import { resolve } from 'node:path';
 
 /**
  * GlobTool enables file pattern matching

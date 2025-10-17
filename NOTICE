@@ -2,7 +2,7 @@ Gemini Lite
 Copyright 2025 ShiftRight Labs
 
 This project includes code derived from the Gemini CLI project
-(https://github.com/google/gemini-cli), which is licensed under
+(https://github.com/google-gemini/gemini-cli), which is licensed under
 the Apache License 2.0.
 
 Portions of this software were adapted from:

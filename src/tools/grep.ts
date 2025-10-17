@@ -22,11 +22,11 @@
  */
 
 import { readFile } from 'node:fs/promises';
-import { resolve, relative } from 'node:path';
+import { resolve } from 'node:path';
 import { glob } from 'glob';
 import type { FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolResult, ToolConfig } from './toolBase.js';
-import { createSuccessResult, createErrorResult } from './toolBase.js';
+import { createSuccessResult } from './toolBase.js';
 import { ToolExecutionError, InvalidArgumentError } from '../errors.js';
 
 interface GrepMatch {
@@ -111,17 +111,18 @@ export class GrepTool implements Tool {
           ? params.maxResults
           : 50;
 
-      const contextLines =
-        typeof params.contextLines === 'number' && params.contextLines >= 0
-          ? Math.min(params.contextLines, 5) // Max 5 lines context
-          : 0;
+      // Reserved for future context line feature
+      // const _contextLines =
+      //   typeof params.contextLines === 'number' && params.contextLines >= 0
+      //     ? Math.min(params.contextLines, 5) // Max 5 lines context
+      //     : 0;
 
       // Build regex
       const flags = caseSensitive ? 'g' : 'gi';
       let regex: RegExp;
       try {
         regex = new RegExp(pattern, flags);
-      } catch (error) {
+      } catch (_error) {
         throw new InvalidArgumentError(
           'pattern',
           pattern,
@@ -191,7 +192,7 @@ export class GrepTool implements Tool {
           if (fileHasMatches) {
             filesWithMatches++;
           }
-        } catch (error) {
+        } catch (_error) {
           // Skip files that can't be read (binary, permission issues, etc.)
           continue;
         }

@@ -25,7 +25,7 @@ import { readdir, stat } from 'node:fs/promises';
 import { resolve, relative, join } from 'node:path';
 import type { FunctionDeclaration } from '@google/generative-ai';
 import type { Tool, ToolResult, ToolConfig } from './toolBase.js';
-import { createSuccessResult, createErrorResult } from './toolBase.js';
+import { createSuccessResult } from './toolBase.js';
 import {
   ToolExecutionError,
   InvalidArgumentError,
@@ -121,7 +121,7 @@ export class ListDirectoryTool implements Tool {
       let dirStat;
       try {
         dirStat = await stat(absolutePath);
-      } catch (error) {
+      } catch (_error) {
         throw new DirectoryListError(
           path,
           `Directory does not exist: ${path}`,

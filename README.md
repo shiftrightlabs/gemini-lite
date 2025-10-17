@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Build](https://github.com/shiftrightlabs/gemini-lite/actions/workflows/build.yml/badge.svg)](https://github.com/shiftrightlabs/gemini-lite/actions)
 
-**By [ShiftRight Labs](https://github.com/shiftrightlabs)** | Derived from [Gemini CLI](https://github.com/google/gemini-cli) (Apache 2.0)
+**By [ShiftRight Labs](https://github.com/shiftrightlabs)** | Derived from [Gemini CLI](https://github.com/google-gemini/gemini-cli) (Apache 2.0)
 
 > ⚠️ **Pre-release Notice**: This is version 0.1.0 - early development release. API may change before 1.0.0. Not recommended for production use yet.
 
@@ -422,4 +422,4 @@ Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Note:** Gemini Lite is a derivative of the [Gemini CLI](https://github.com/google/gemini-cli) project (Apache 2.0), maintained by ShiftRight Labs as a standalone package for **non-interactive, library-based use cases** such as CI pipelines, automated code analysis, and programmatic integrations requiring guaranteed read-only access. See [NOTICE](NOTICE) for attribution details.
+**Note:** Gemini Lite is a derivative of the [Gemini CLI](https://github.com/google-gemini/gemini-cli) project (Apache 2.0), maintained by ShiftRight Labs as a standalone package for **non-interactive, library-based use cases** such as CI pipelines, automated code analysis, and programmatic integrations requiring guaranteed read-only access. See [NOTICE](NOTICE) for attribution details.

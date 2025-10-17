@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Gemini Lite** is a lightweight, read-only code analysis module that brings Gemini AI capabilities into development workflows. It's a derivative of the [Gemini CLI](https://github.com/google/gemini-cli) project (Apache 2.0), maintained by ShiftRight Labs as a standalone NPM package.
+**Gemini Lite** is a lightweight, read-only code analysis module that brings Gemini AI capabilities into development workflows. It's a derivative of the [Gemini CLI](https://github.com/google-gemini/gemini-cli) project (Apache 2.0), maintained by ShiftRight Labs as a standalone NPM package.
 
 **Key Characteristics:**
 - ✅ **Read-only** - Cannot modify files, execute commands, or mutate system state
@@ -75,7 +75,7 @@ This project is **guaranteed read-only** through physical isolation:
  *
  * ---
  * This file is derived from [specific component] in the Gemini CLI project
- * (https://github.com/google/gemini-cli), Copyright 2024-2025 Google LLC,
+ * (https://github.com/google-gemini/gemini-cli), Copyright 2024-2025 Google LLC,
  * licensed under the Apache License 2.0.
  */
 ```
@@ -420,7 +420,7 @@ When changing public API:
 ## References
 
 - **Main Repository**: https://github.com/shiftrightlabs/gemini-lite
-- **Original Project**: https://github.com/google/gemini-cli (Apache 2.0)
+- **Original Project**: https://github.com/google-gemini/gemini-cli (Apache 2.0)
 - **Package**: https://www.npmjs.com/package/@shiftrightlabs/gemini-lite
 - **License**: Apache License 2.0 (see `LICENSE` and `NOTICE`)
 
