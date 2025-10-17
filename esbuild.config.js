@@ -10,7 +10,7 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 await build({
   entryPoints: ['./dist/index.js'],
-  bundle: false, // Don't bundle - keep tree-shakeable
+  bundle: true, // Bundle with external dependencies
   platform: 'node',
   target: 'node20',
   format: 'esm',
